@@ -1,0 +1,30 @@
+version: '0'
+services:
+ hsdb_docker:
+  image: mysql:5.5
+  environment:
+   - MYSQL_ALLOW_EMPTY_PASSWORD=1
+   - MYSQL_DATABASE=hsdb
+  container_name: hsdb_docker
+
+ hs:
+  build: .
+  ports:
+   - "8443:8443"
+  #expose:
+   # - "8080" # expose the port to other containers, but it's not exposed to the host
+  links:
+   - hsdb_docker
+  environment:
+   - SPRING.DATASOURCE.URL=jdbc:mysql://hsdb_docker:3306/hsdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+  #depends-on:
+   - hsdb_docker
+  restart: unless-stopped # Restart the container. Necessary to avoid problems if the app starts before the db is ready
+
+ #balanceador:
+  #image: haproxy:1.9.6
+  #ports:
+   # - "9090:80" # Only service that is exposed to the host is the lb
+  #volumes:
+   # - "./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro"
+  #restart: unless-stopped
