@@ -1,30 +1,57 @@
-version: '0'
+version: '2'
 services:
  hsdb_docker:
-  image: mysql:5.5
-  environment:
-   - MYSQL_ALLOW_EMPTY_PASSWORD=1
-   - MYSQL_DATABASE=hsdb
+  image: mysql:5.7.19
   container_name: hsdb_docker
+  environment:
+   - MYSQL_ROOT_PASSWORD=rootPass
+   - MYSQL_DATABASE=hsdb
+   - MYSQL_USER=hsDefaultUser
+   - MYSQL_PASSWORD=rootPass
+  command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8
 
- hs:
+ hs1:
   build: .
-  ports:
-   - "8443:8443"
-  #expose:
-   # - "8080" # expose the port to other containers, but it's not exposed to the host
-  links:
+  image: dad_hs
+  container_name: hs1
+  depends_on:
    - hsdb_docker
+  expose:
+    - "8080" # expose the port to other containers, but it's not exposed to the host
+  environment:
+   - SPRING_DATASOURCE_URL=jdbc:mysql://hsdb_docker:3306/hsdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+   - SPRING.DATASOURCE.USERNAME=hsDefaultUser
+   - SPRING.DATASOURCE.PASSWORD=rootPass
+
+ hs2:
+  build: .
+  image: dad_hs
+  container_name: hs2
+  depends_on:
+   - hsdb_docker
+   - hs1
+  expose:
+   - "8080"
   environment:
    - SPRING.DATASOURCE.URL=jdbc:mysql://hsdb_docker:3306/hsdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-  #depends-on:
-   - hsdb_docker
-  restart: unless-stopped # Restart the container. Necessary to avoid problems if the app starts before the db is ready
+   - SPRING_JPA_HIBERNATE_DDL-AUTO=none
+   - SPRING.DATASOURCE.USERNAME=hsDefaultUser
+   - SPRING.DATASOURCE.PASSWORD=rootPass
 
- #balanceador:
-  #image: haproxy:1.9.6
-  #ports:
-   # - "9090:80" # Only service that is exposed to the host is the lb
-  #volumes:
-   # - "./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro"
-  #restart: unless-stopped
+ balanceador:
+  build: ./haproxy
+  image: dad_haproxy_balanceador
+  container_name: hsbalan
+  depends_on:
+   - hs1
+   - hs2
+  ports:
+   - "9090:80" # Only service that is exposed to the host is the lb  
+
+
+
+
+
+
+
+
