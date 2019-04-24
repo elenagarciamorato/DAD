@@ -78,6 +78,8 @@ services:
    - hs2
   ports:
    - "9090:80" # Only service that is exposed to the host is the lb
+   - "8443:8443"
+   
 
  proxysi:
   build: ./ProxySI
