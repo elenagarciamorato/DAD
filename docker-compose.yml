@@ -22,8 +22,8 @@ services:
     ipv4_address: 172.20.0.3
   depends_on:
    - hsdb_docker
-  expose:
-    - "8080" # expose the port to other containers, but it's not exposed to the host
+  #expose:
+    #- "8080" # expose the port to other containers, but it's not exposed to the host
   environment:
    - SPRING_DATASOURCE_URL=jdbc:mysql://172.20.0.2:3306/hsdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
    - SPRING.DATASOURCE.USERNAME=hsDefaultUser
@@ -39,8 +39,8 @@ services:
   depends_on:
    - hsdb_docker
    - hs1
-  expose:
-   - "8080"
+  #expose:
+   #- "8080"
   environment:
    - SPRING.DATASOURCE.URL=jdbc:mysql://172.20.0.2:3306/hsdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
    - SPRING_JPA_HIBERNATE_DDL-AUTO=none
@@ -54,8 +54,8 @@ services:
   networks:
    hs_net:
     ipv4_address: 172.20.0.5
-  expose:
-   - "8080"
+  #expose:
+   #- "8080"
 
  si2:
   build: ./SI
@@ -64,8 +64,8 @@ services:
   networks:
    hs_net:
     ipv4_address: 172.20.0.6
-  expose:
-   - "8080"
+  #expose:
+   #- "8080"
   
  proxyapp:
   build: ./ProxyApp
