@@ -26,7 +26,8 @@ services:
     #- "8080" # expose the port to other containers, but it's not exposed to the host
   environment:
    - SPRING_DATASOURCE_URL=jdbc:mysql://172.20.0.2:3306/hsdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-   - SPRING.DATASOURCE.USERNAME=hsDefaultUser
+   - SPRING_JPA_HIBERNATE_DDL-AUTO=update
+   - SPRING.DATASOURCE.USERNAME=root
    - SPRING.DATASOURCE.PASSWORD=rootPass
 
  hs2:
@@ -43,8 +44,8 @@ services:
    #- "8080"
   environment:
    - SPRING.DATASOURCE.URL=jdbc:mysql://172.20.0.2:3306/hsdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-   - SPRING_JPA_HIBERNATE_DDL-AUTO=none
-   - SPRING.DATASOURCE.USERNAME=hsDefaultUser
+   - SPRING_JPA_HIBERNATE_DDL-AUTO=update
+   - SPRING.DATASOURCE.USERNAME=root
    - SPRING.DATASOURCE.PASSWORD=rootPass
 
  si1:
